@@ -1,0 +1,142 @@
+/* Основные цвета */
+QMainWindow, QDialog {
+    background-color: #F5F5F5;
+}
+
+/* Панель меню */
+QMenuBar {
+    background-color: #2C3E50;
+    color: #FFFFFF;
+    font-size: 13px;
+    padding: 5px;
+}
+QMenuBar::item {
+    padding: 5px 10px;
+}
+QMenuBar::item:selected {
+    background-color: #3498DB;
+}
+QMenu {
+    background-color: #FFFFFF;
+    border: 1px solid #BDC3C7;
+}
+QMenu::item {
+    padding: 8px 25px 8px 15px;
+}
+QMenu::item:selected {
+    background-color: #ECF0F1;
+}
+
+/* Вкладки */
+QTabWidget::pane {
+    border: 1px solid #BDC3C7;
+    background-color: #FFFFFF;
+}
+QTabBar::tab {
+    background-color: #ECF0F1;
+    color: #2C3E50;
+    padding: 10px 20px;
+    margin-right: 2px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+QTabBar::tab:selected {
+    background-color: #3498DB;
+    color: #FFFFFF;
+}
+
+/* Кнопки */
+QPushButton {
+    background-color: #3498DB;
+    color: #FFFFFF;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 13px;
+}
+QPushButton:hover {
+    background-color: #2980B9;
+}
+QPushButton:pressed {
+    background-color: #21618C;
+}
+QPushButton:disabled {
+    background-color: #BDC3C7;
+    color: #7F8C8D;
+}
+
+/* Таблицы */
+QTableWidget {
+    background-color: #FFFFFF;
+    border: 1px solid #BDC3C7;
+    gridline-color: #ECF0F1;
+    font-size: 12px;
+}
+QTableWidget::item:selected {
+    background-color: #D6EAF8;
+    color: #2C3E50;
+}
+QHeaderView::section {
+    background-color: #2C3E50;
+    color: #FFFFFF;
+    padding: 8px;
+    border: none;
+    font-weight: bold;
+}
+
+/* Поля ввода */
+QLineEdit, QComboBox, QDateEdit, QSpinBox, QDoubleSpinBox {
+    padding: 6px;
+    border: 1px solid #BDC3C7;
+    border-radius: 4px;
+    background-color: #FFFFFF;
+    font-size: 13px;
+}
+QLineEdit:focus, QComboBox:focus {
+    border: 1px solid #3498DB;
+}
+
+/* Метки */
+QLabel {
+    color: #2C3E50;
+    font-size: 13px;
+}
+
+/* Группировка */
+QGroupBox {
+    font-weight: bold;
+    border: 1px solid #BDC3C7;
+    border-radius: 5px;
+    margin-top: 10px;
+    padding-top: 15px;
+}
+QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 10px;
+    padding: 0 5px;
+}
+
+/* Строка состояния */
+QStatusBar {
+    background-color: #ECF0F1;
+    color: #7F8C8D;
+    font-size: 12px;
+}
+
+/* Диалоги */
+QDialog {
+    background-color: #F5F5F5;
+}
+
+/* ScrollBar */
+QScrollBar:vertical {
+    width: 12px;
+    background-color: #ECF0F1;
+}
+QScrollBar::handle:vertical {
+    background-color: #BDC3C7;
+    border-radius: 6px;
+}
+QScrollBar::handle:vertical:hover {
+    background-color: #95A5A6;
+}
