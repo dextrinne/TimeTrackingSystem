@@ -74,8 +74,6 @@ def init_database():
         print("[OK] SQL скрипт выполнен успешно\n")
         print("=== База данных готова к работе! ===\n")
         print("Данные для входа:")
-        print("  Логин: admin, Пароль: admin123 (Администратор)")
-        print("  Логин: head, Пароль: head123 (Руководитель)")
         print("  Логин: tabel, Пароль: tabel123 (Табельщик)")
         
         return True

@@ -27,9 +27,7 @@ class DayType(Enum):
 
 
 class UserRole(Enum):
-    """Роли пользователей (ЛР1-НФ3)."""
-    ADMIN = "Администратор"
-    HEAD = "Руководитель"
+    """Роль пользователя (ЛР1-НФ3). Единственная роль — Табельщик."""
     TABELSHCHIK = "Табельщик"
 
 
@@ -54,12 +52,14 @@ class Employee:
     @staticmethod
     def from_row(row):
         """Создание объекта из строки БД."""
+        if row is None:
+            return None
         return Employee(
             id_employee=row[0],
             fio=row[1],
             position=row[2],
-            rate=float(row[3]) if row[3] else 0.0,
-            norm_hours=row[4] if row[4] else 0
+            rate=float(row[3]) if row[3] is not None else 0.0,
+            norm_hours=row[4] if row[4] is not None else 0
         )
 
 
@@ -88,6 +88,8 @@ class Timesheet:
     @staticmethod
     def from_row(row):
         """Создание объекта из строки БД."""
+        if row is None:
+            return None
         return Timesheet(
             id_timesheet=row[0],
             period_start=row[1],
@@ -122,12 +124,14 @@ class TimesheetEntry:
     @staticmethod
     def from_row(row):
         """Создание объекта из строки БД."""
+        if row is None:
+            return None
         return TimesheetEntry(
             id_timesheet_entry=row[0],
             employee_id=row[1],
             timesheet_id=row[2],
             date=row[3],
-            hours_worked=float(row[4]) if row[4] else 0.0,
+            hours_worked=float(row[4]) if row[4] is not None else 0.0,
             type=row[5]
         )
 
@@ -153,6 +157,8 @@ class Document:
     @staticmethod
     def from_row(row):
         """Создание объекта из строки БД."""
+        if row is None:
+            return None
         return Document(
             id_document=row[0],
             employee_id=row[1],
@@ -175,6 +181,8 @@ class User:
     @staticmethod
     def from_row(row):
         """Создание объекта из строки БД."""
+        if row is None:
+            return None
         return User(
             id_user=row[0],
             username=row[1],
@@ -199,6 +207,8 @@ class ActivityLog:
     @staticmethod
     def from_row(row):
         """Создание объекта из строки БД."""
+        if row is None:
+            return None
         return ActivityLog(
             id_log=row[0],
             user_id=row[1],
@@ -207,4 +217,58 @@ class ActivityLog:
             entity_id=row[4],
             description=row[5],
             created_at=row[6]
+        )
+
+
+@dataclass
+class Report:
+    """Модель отчёта (ЛР2-Абстракция «Отчёт»).
+
+    Формируется на основе данных табеля и содержит сводную
+    информацию по каждому сотруднику за отчётный период.
+    """
+    id_report: Optional[int] = None
+    timesheet_id: int = 0
+    period_start: date = field(default_factory=date.today)
+    period_end: date = field(default_factory=date.today)
+    generated_at: datetime = field(default_factory=datetime.now)
+    data: list = field(default_factory=list)  # Список словарей с данными по сотрудникам
+
+    def to_dict(self):
+        return {
+            'id_report': self.id_report,
+            'timesheet_id': self.timesheet_id,
+            'period_start': self.period_start,
+            'period_end': self.period_end,
+            'generated_at': self.generated_at,
+            'data': self.data
+        }
+
+
+@dataclass
+class Archive:
+    """Модель архива (ЛР2-Абстракция «Архив»).
+
+    Контейнер для хранения и поиска табелей за прошлые периоды.
+    Обеспечивает долговременное хранение и извлечение данных.
+    """
+    id_archive: Optional[int] = None
+    timesheet_id: int = 0
+    archived_at: datetime = field(default_factory=datetime.now)
+    period_start: date = field(default_factory=date.today)
+    period_end: date = field(default_factory=date.today)
+    comment: str = ""
+
+    @staticmethod
+    def from_row(row):
+        """Создание объекта из строки БД."""
+        if row is None:
+            return None
+        return Archive(
+            id_archive=row[0],
+            timesheet_id=row[1],
+            archived_at=row[2],
+            period_start=row[3],
+            period_end=row[4],
+            comment=row[5] if len(row) > 5 else ""
         )

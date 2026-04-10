@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS timesheet (
     id_timesheet SERIAL PRIMARY KEY,
     period_start DATE NOT NULL,
     period_end DATE NOT NULL CHECK (period_end >= period_start),
-    status VARCHAR(50) DEFAULT 'В работе',
+    status VARCHAR(50) DEFAULT 'В работе' CHECK (status IN ('В работе', 'Утверждён', 'Архивирован')),
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     approved_at TIMESTAMP,
     archived_at TIMESTAMP
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS timesheet_entry (
     timesheet_id INT NOT NULL REFERENCES timesheet(id_timesheet),
     date DATE NOT NULL,
     hours_worked NUMERIC(4,2) DEFAULT 0 CHECK (hours_worked >= 0),
-    type VARCHAR(50)
+    type VARCHAR(50) CHECK (type IN ('Рабочий день', 'Отпуск', 'Больничный', 'Командировка', 'Отгул', 'Неявка'))
 );
 
 -- ============================================================
@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS timesheet_entry (
 CREATE TABLE IF NOT EXISTS document (
     id_document SERIAL PRIMARY KEY,
     employee_id INT NOT NULL REFERENCES employee(id_employee),
-    type VARCHAR(50) NOT NULL,
+    type VARCHAR(50) NOT NULL CHECK (type IN ('Отпуск', 'Больничный', 'Командировка', 'Отгул')),
     start_date DATE NOT NULL,
     end_date DATE NOT NULL CHECK (end_date >= start_date)
 );
@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS users (
     id_user SERIAL PRIMARY KEY,
     username VARCHAR(100) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
-    role VARCHAR(50) NOT NULL CHECK (role IN ('Администратор', 'Руководитель', 'Табельщик')),
+    role VARCHAR(50) NOT NULL DEFAULT 'Табельщик' CHECK (role = 'Табельщик'),
     employee_id INT REFERENCES employee(id_employee),
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -88,11 +88,9 @@ CREATE TABLE IF NOT EXISTS activity_log (
 -- Тестовые данные
 -- ============================================================
 
--- Пользователи (пароли в хэше: "admin123", "head123", "tabel123")
+-- Пользователи (пароль: "tabel123", хеш SHA-256)
 INSERT INTO users (username, password_hash, role) VALUES
-('admin', 'admin123', 'Администратор'),
-('head', 'head123', 'Руководитель'),
-('tabel', 'tabel123', 'Табельщик');
+('tabel', '763bd343720eb5fdf55339f759e5a2411a82c770f0221e9ee4f7de10b59885f8', 'Табельщик');
 
 -- Сотрудники
 INSERT INTO employee (fio, position, rate, norm_hours) VALUES
