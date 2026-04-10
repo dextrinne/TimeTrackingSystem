@@ -1,28 +1,34 @@
 """
 Точка входа в ПС «Учёт рабочего времени сотрудников института».
 ЛР1-ЛР4: Полный функционал системы на PostgreSQL.
+UI: PyQt5 с QSS стилями.
 """
 
 import sys
 import os
-import tkinter as tk
-from tkinter import messagebox
+
+from PyQt5.QtWidgets import QApplication, QMessageBox
+from PyQt5.QtCore import Qt
 
 from database.db_manager import DatabaseManager
-from ui.login_window import LoginWindow
-from ui.main_window import MainWindow
+from ui.dialogs.login_dialog import LoginDialog
+from ui.widgets.main_window import MainWindow
 from config import DB_CONFIG, APP_CONFIG
 
 
 def main():
     """Главная функция запуска приложения."""
+    app = QApplication(sys.argv)
+    app.setApplicationName(APP_CONFIG['title'])
+    app.setApplicationVersion(APP_CONFIG['version'])
+    app.setOrganizationName(APP_CONFIG['organization'])
+
     # Подключение к PostgreSQL
     try:
         db_manager = DatabaseManager(DB_CONFIG)
     except Exception as e:
-        root = tk.Tk()
-        root.withdraw()
-        messagebox.showerror(
+        QMessageBox.critical(
+            None,
             'Ошибка подключения к БД',
             f'Не удалось подключиться к PostgreSQL:\n\n{str(e)}\n\n'
             f'Проверьте:\n'
@@ -42,26 +48,28 @@ def main():
     try:
         db_manager.execute_query("SELECT 1", fetchone=True)
     except Exception as e:
-        root = tk.Tk()
-        root.withdraw()
-        messagebox.showerror(
+        QMessageBox.critical(
+            None,
             'Ошибка',
             f'База данных недоступна:\n{str(e)}\n\n'
             f'Для инициализации выполните:\n'
             f'  python database/init_db.py'
         )
+        db_manager.close_all()
         sys.exit(1)
 
     # Запускаем окно авторизации
-    login_window = LoginWindow(db_manager)
-    login_window.wait_window()
-    
-    current_user = login_window.get_user()
-    
+    login_dialog = LoginDialog(db_manager)
+    if login_dialog.exec() != 1:
+        db_manager.close_all()
+        sys.exit(0)
+
+    current_user = login_dialog.get_user()
+
     if current_user:
-        # Запускаем главное окно
         main_window = MainWindow(db_manager, current_user)
-        main_window.mainloop()
+        main_window.show()
+        sys.exit(app.exec())
     else:
         db_manager.close_all()
         sys.exit(0)

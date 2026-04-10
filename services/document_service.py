@@ -3,10 +3,8 @@
 ЛР1-Ф2: Ввод плановых неявок.
 """
 
-import sys
-import os
+from datetime import datetime
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from database.db_manager import DatabaseManager
 from database.models import Document
 

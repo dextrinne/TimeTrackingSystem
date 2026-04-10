@@ -3,10 +3,6 @@
 ЛР1-Ф1: Ведение справочной информации о сотрудниках.
 """
 
-import sys
-import os
-
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from database.db_manager import DatabaseManager
 from database.models import Employee
 

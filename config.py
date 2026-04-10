@@ -24,30 +24,14 @@ EXPORT_CONFIG = {
     'export_directory': 'exports'
 }
 
-# Роли и права доступа
+# Единственная роль: Табельщик (полный доступ ко всем функциям системы)
 ROLE_PERMISSIONS = {
-    'Администратор': {
+    'Табельщик': {
         'employees': ['read', 'create', 'update', 'delete'],
         'timesheets': ['read', 'create', 'update', 'delete', 'approve', 'archive'],
         'documents': ['read', 'create', 'update', 'delete'],
         'reports': ['read', 'export'],
-        'users': ['read', 'create', 'update', 'delete'],
+        'users': ['read'],
         'settings': ['read', 'update']
-    },
-    'Руководитель': {
-        'employees': ['read'],
-        'timesheets': ['read', 'approve', 'archive'],
-        'documents': ['read'],
-        'reports': ['read', 'export'],
-        'users': [],
-        'settings': ['read']
-    },
-    'Табельщик': {
-        'employees': ['read', 'create', 'update'],
-        'timesheets': ['read', 'create', 'update'],
-        'documents': ['read', 'create', 'update', 'delete'],
-        'reports': ['read', 'export'],
-        'users': [],
-        'settings': []
     }
 }

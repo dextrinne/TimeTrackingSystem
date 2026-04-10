@@ -4,11 +4,8 @@
 ЛР1-Ф5: Выгрузка отчётов в XLSX.
 """
 
-import sys
-import os
 from datetime import datetime
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from database.db_manager import DatabaseManager
 
 
@@ -200,22 +197,24 @@ class ReportService:
             # Итоговая строка
             if report_data:
                 total_row = len(report_data) + 6
-                ws.merge_cells(start_row=total_row, start_column=1, 
+                ws.merge_cells(start_row=total_row, start_column=1,
                              end_row=total_row, end_column=3)
                 ws.cell(row=total_row, column=1, value="ИТОГО:").font = Font(bold=True)
-                
-                ws.cell(row=total_row, column=5, 
+
+                ws.cell(row=total_row, column=5,
                        value=sum(d['workdays'] for d in report_data)).font = Font(bold=True)
-                ws.cell(row=total_row, column=6, 
+                ws.cell(row=total_row, column=6,
                        value=sum(d['vacations'] for d in report_data)).font = Font(bold=True)
-                ws.cell(row=total_row, column=7, 
+                ws.cell(row=total_row, column=7,
                        value=sum(d['sick_leaves'] for d in report_data)).font = Font(bold=True)
-                ws.cell(row=total_row, column=8, 
+                ws.cell(row=total_row, column=8,
                        value=sum(d['business_trips'] for d in report_data)).font = Font(bold=True)
-                ws.cell(row=total_row, column=9, 
+                ws.cell(row=total_row, column=9,
                        value=sum(d['absences'] for d in report_data)).font = Font(bold=True)
-                ws.cell(row=total_row, column=10, 
+                ws.cell(row=total_row, column=10,
                        value=sum(d['total_hours'] for d in report_data)).font = Font(bold=True)
+            else:
+                total_row = 5
 
             # Ширина колонок
             ws.column_dimensions['A'].width = 5
@@ -227,7 +226,7 @@ class ReportService:
 
             # Дата формирования
             ws.merge_cells('A{}:J{}'.format(total_row + 2, total_row + 2))
-            ws.cell(row=total_row + 2, column=1, 
+            ws.cell(row=total_row + 2, column=1,
                    value=f"Дата формирования: {datetime.now().strftime('%d.%m.%Y %H:%M')}").font = Font(italic=True, size=9)
 
             wb.save(file_path)

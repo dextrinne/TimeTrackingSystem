@@ -4,11 +4,8 @@
 ЛР2: Автоматический расчёт, управление статусами.
 """
 
-import sys
-import os
 from datetime import datetime, date, timedelta
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from database.db_manager import DatabaseManager
 from database.models import Timesheet, TimesheetEntry, DayType
 
@@ -72,15 +69,23 @@ class TimesheetService:
             )
 
     def delete_timesheet(self, timesheet_id):
-        """Удалить табель и все его записи."""
-        self.db.execute_query(
-            "DELETE FROM timesheet_entry WHERE timesheet_id = %s",
-            (timesheet_id,)
-        )
-        self.db.execute_query(
-            "DELETE FROM timesheet WHERE id_timesheet = %s",
-            (timesheet_id,)
-        )
+        """Удалить табель и все его записи (в транзакции).
+
+        Returns:
+            bool: True если удаление прошло успешно, False иначе.
+        """
+        try:
+            self.db.execute_query(
+                "DELETE FROM timesheet_entry WHERE timesheet_id = %s",
+                (timesheet_id,)
+            )
+            self.db.execute_query(
+                "DELETE FROM timesheet WHERE id_timesheet = %s",
+                (timesheet_id,)
+            )
+            return True
+        except Exception:
+            return False
 
     def add_entry(self, entry: TimesheetEntry):
         """Добавить запись в табель."""
