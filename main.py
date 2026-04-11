@@ -6,6 +6,7 @@ UI: PyQt5 с QSS стилями.
 
 import sys
 import os
+import traceback
 
 from PyQt5.QtWidgets import QApplication, QMessageBox
 from PyQt5.QtCore import Qt
@@ -14,6 +15,31 @@ from database.db_manager import DatabaseManager
 from ui.dialogs.login_dialog import LoginDialog
 from ui.widgets.main_window import MainWindow
 from config import DB_CONFIG, APP_CONFIG
+
+
+def exception_hook(exctype, value, tb):
+    """Глобальный обработчик исключений."""
+    error_msg = ''.join(traceback.format_exception(exctype, value, tb))
+    print(f"Необработанное исключение:\n{error_msg}")
+    
+    # Показываем сообщение об ошибке
+    msg = QMessageBox()
+    msg.setIcon(QMessageBox.Critical)
+    msg.setWindowTitle('Критическая ошибка')
+    msg.setText('Произошла критическая ошибка')
+    msg.setDetailedText(error_msg)
+    msg.setStandardButtons(QMessageBox.Ok)
+    msg.exec()
+    
+    # Сохраняем лог
+    try:
+        with open('error.log', 'a', encoding='utf-8') as f:
+            f.write(f"\n{error_msg}\n")
+    except:
+        pass
+
+
+sys.excepthook = exception_hook
 
 
 def main():

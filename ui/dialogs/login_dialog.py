@@ -5,10 +5,11 @@
 
 import hashlib
 import os
+import json
 
 from PyQt5.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QFormLayout,
-    QLabel, QLineEdit, QPushButton, QMessageBox, QFrame
+    QLabel, QLineEdit, QPushButton, QMessageBox, QFrame, QCheckBox
 )
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
@@ -23,12 +24,16 @@ class LoginDialog(QDialog):
         super().__init__(parent)
         self.db = db_manager
         self.current_user = None
+        # Используем абсолютный путь в директории приложения
+        app_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        self.remember_file = os.path.join(app_dir, 'remember.json')
         self.init_ui()
+        self.load_remembered_credentials()
 
     def init_ui(self):
         """Инициализация интерфейса."""
         self.setWindowTitle('Вход в систему — Учёт рабочего времени')
-        self.setFixedSize(400, 300)
+        self.setFixedSize(420, 380)
         self.setModal(True)
 
         # Загрузка QSS стиля
@@ -37,50 +42,64 @@ class LoginDialog(QDialog):
             self.setStyleSheet(f.read())
 
         layout = QVBoxLayout(self)
-        layout.setSpacing(15)
+        layout.setSpacing(10)
+        layout.setContentsMargins(30, 20, 30, 20)
 
         # Заголовок
-        title_frame = QFrame()
-        title_layout = QVBoxLayout(title_frame)
-        title_layout.setContentsMargins(0, 30, 0, 10)
-
         title_label = QLabel('Учёт рабочего времени')
         title_label.setFont(QFont('Arial', 16, QFont.Weight.Bold))
         title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        title_layout.addWidget(title_label)
+        layout.addWidget(title_label)
 
         subtitle_label = QLabel('ИММИ КубГУ')
         subtitle_label.setStyleSheet('color: gray; font-size: 11px;')
         subtitle_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        title_layout.addWidget(subtitle_label)
+        layout.addWidget(subtitle_label)
 
-        layout.addWidget(title_frame)
+        layout.addSpacing(10)
 
         # Форма входа
-        form_frame = QFrame()
-        form_layout = QFormLayout(form_frame)
-        form_layout.setSpacing(10)
-
+        login_label = QLabel('Логин:')
+        layout.addWidget(login_label)
+        
         self.login_edit = QLineEdit()
         self.login_edit.setPlaceholderText('Введите логин')
-        form_layout.addRow('Логин:', self.login_edit)
+        self.login_edit.setMinimumHeight(35)
+        layout.addWidget(self.login_edit)
 
+        password_label = QLabel('Пароль:')
+        layout.addWidget(password_label)
+        
         self.password_edit = QLineEdit()
         self.password_edit.setPlaceholderText('Введите пароль')
         self.password_edit.setEchoMode(QLineEdit.EchoMode.Password)
+        self.password_edit.setMinimumHeight(35)
         self.password_edit.returnPressed.connect(self.login)
-        form_layout.addRow('Пароль:', self.password_edit)
+        layout.addWidget(self.password_edit)
 
-        layout.addWidget(form_frame)
+        # Чекбокс отображения пароля
+        self.show_password_checkbox = QCheckBox('Показать пароль')
+        layout.addWidget(self.show_password_checkbox)
+        self.show_password_checkbox.stateChanged.connect(self.toggle_password_visibility)
+
+        layout.addSpacing(5)
+
+        # Чекбокс "Запомнить меня"
+        self.remember_checkbox = QCheckBox('Запомнить меня')
+        layout.addWidget(self.remember_checkbox)
+
+        layout.addStretch()
 
         # Кнопки
         button_layout = QHBoxLayout()
-        button_layout.setContentsMargins(40, 0, 40, 10)
+        button_layout.setSpacing(10)
 
         self.login_btn = QPushButton('Войти')
+        self.login_btn.setMinimumHeight(35)
         self.login_btn.clicked.connect(self.login)
 
         self.cancel_btn = QPushButton('Отмена')
+        self.cancel_btn.setMinimumHeight(35)
         self.cancel_btn.clicked.connect(self.reject)
 
         button_layout.addWidget(self.login_btn)
@@ -117,6 +136,17 @@ class LoginDialog(QDialog):
                     'role': role,
                     'employee_id': employee_id
                 }
+
+                # Сохраняем или очищаем учётные данные
+                try:
+                    if self.remember_checkbox.isChecked():
+                        self.save_credentials(username, password)
+                    else:
+                        self.clear_credentials()
+                except Exception as e:
+                    # Не блокируем вход из-за ошибок сохранения
+                    print(f"Ошибка при сохранении/очистке: {e}")
+
                 self.accept()
             else:
                 QMessageBox.critical(self, 'Ошибка', 'Неверный логин или пароль')
@@ -127,3 +157,56 @@ class LoginDialog(QDialog):
     def get_user(self):
         """Получить данные текущего пользователя."""
         return self.current_user
+
+    def toggle_password_visibility(self, state):
+        """Переключить отображение пароля."""
+        # Qt.Checked = 2, Qt.Unchecked = 0
+        if state == 2:  # Checked
+            self.password_edit.setEchoMode(QLineEdit.EchoMode.Normal)
+        else:
+            self.password_edit.setEchoMode(QLineEdit.EchoMode.Password)
+
+    def load_remembered_credentials(self):
+        """Загрузить сохранённые учётные данные."""
+        try:
+            if os.path.exists(self.remember_file):
+                with open(self.remember_file, 'r', encoding='utf-8') as f:
+                    credentials = json.load(f)
+                self.login_edit.setText(credentials.get('username', ''))
+                self.password_edit.setText(credentials.get('password', ''))
+                self.remember_checkbox.setChecked(True)
+        except (json.JSONDecodeError, KeyError, IOError, OSError) as e:
+            # Если файл повреждён или недоступен - просто игнорируем
+            print(f"Предупреждение: не удалось загрузить сохранённые данные: {e}")
+        except Exception as e:
+            # Любые другие ошибки при загрузке
+            print(f"Ошибка при загрузке сохранённых данных: {e}")
+
+    def save_credentials(self, username, password):
+        """Сохранить учётные данные."""
+        try:
+            credentials = {
+                'username': username,
+                'password': password
+            }
+            with open(self.remember_file, 'w', encoding='utf-8') as f:
+                json.dump(credentials, f, ensure_ascii=False, indent=2)
+        except (IOError, OSError, PermissionError) as e:
+            print(f"Ошибка сохранения учётных данных: {e}")
+            QMessageBox.warning(
+                self,
+                'Предупреждение',
+                f'Не удалось сохранить учётные данные:\n{e}'
+            )
+        except Exception as e:
+            print(f"Неизвестная ошибка при сохранении: {e}")
+
+    def clear_credentials(self):
+        """Очистить сохранённые учётные данные."""
+        try:
+            if os.path.exists(self.remember_file):
+                os.remove(self.remember_file)
+        except (IOError, OSError, PermissionError) as e:
+            print(f"Ошибка удаления учётных данных: {e}")
+        except Exception as e:
+            print(f"Неизвестная ошибка при удалении: {e}")

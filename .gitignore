@@ -78,3 +78,6 @@ exports/
 # Backup files
 *.bak
 *~
+
+# Remembered credentials
+remember.json

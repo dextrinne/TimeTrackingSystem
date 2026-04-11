@@ -152,15 +152,18 @@ class TimesheetsTab(QWidget):
 
     def create_timesheet(self):
         """Создание нового табеля."""
-        dialog = TimesheetDialog(self)
-        if dialog.exec() == 1:
-            period_start, period_end = dialog.get_period()
-            timesheet_id = self.timesheet_service.create_timesheet(period_start, period_end)
-            if timesheet_id:
-                self.load_timesheets()
-                QMessageBox.information(self, 'Успех', 'Табель создан')
-            else:
-                QMessageBox.warning(self, 'Ошибка', 'Не удалось создать табель')
+        try:
+            dialog = TimesheetDialog(self)
+            if dialog.exec() == 1:
+                period_start, period_end = dialog.get_period()
+                timesheet_id = self.timesheet_service.create_timesheet(period_start, period_end)
+                if timesheet_id:
+                    self.load_timesheets()
+                    QMessageBox.information(self, 'Успех', 'Табель создан')
+                else:
+                    QMessageBox.warning(self, 'Ошибка', 'Не удалось создать табель')
+        except Exception as e:
+            QMessageBox.critical(self, 'Ошибка', f'Произошла ошибка при создании табеля:\n{str(e)}')
 
     def change_status(self):
         """Изменение статуса табеля."""

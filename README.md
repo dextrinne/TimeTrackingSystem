@@ -242,7 +242,7 @@ python -m unittest discover tests -v
 | Набор | Тестов | Описание |
 |-------|--------|----------|
 | `test_models.py` | 10 | Сериализация, десериализация моделей |
-| `test_services.py` | 9 | CRUD операции (SQLite) |
+| `test_services.py` | 9 | CRUD операции (psycopg2 моки) |
 | `test_validators.py` | 19 | Валидация сотрудников, документов, табелей, часов, логинов |
 
 ---

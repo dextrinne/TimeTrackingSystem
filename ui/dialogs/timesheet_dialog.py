@@ -47,7 +47,7 @@ class TimesheetDialog(QDialog):
         form_layout.addRow('Дата начала:', self.start_date_edit)
 
         self.end_date_edit = QDateEdit()
-        self.end_date_edit.setDate(QDate.today())
+        self.end_date_edit.setDate(QDate.currentDate())
         self.end_date_edit.setCalendarPopup(True)
         self.end_date_edit.setDisplayFormat('yyyy-MM-dd')
         form_layout.addRow('Дата окончания:', self.end_date_edit)
