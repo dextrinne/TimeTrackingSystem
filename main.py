@@ -31,12 +31,26 @@ def exception_hook(exctype, value, tb):
     msg.setStandardButtons(QMessageBox.Ok)
     msg.exec()
     
-    # Сохраняем лог
+    # Сохраняем лог (используем абсолютный путь в директории приложения)
     try:
-        with open('error.log', 'a', encoding='utf-8') as f:
-            f.write(f"\n{error_msg}\n")
-    except:
-        pass
+        app_dir = os.path.dirname(os.path.abspath(__file__))
+        log_file = os.path.join(app_dir, 'error.log')
+        
+        # Проверяем размер лога (макс 5MB)
+        max_log_size = 5 * 1024 * 1024  # 5 MB
+        if os.path.exists(log_file) and os.path.getsize(log_file) > max_log_size:
+            # Архивируем старый лог
+            old_log = log_file + '.old'
+            if os.path.exists(old_log):
+                os.remove(old_log)
+            os.rename(log_file, old_log)
+        
+        with open(log_file, 'a', encoding='utf-8') as f:
+            from datetime import datetime
+            timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            f.write(f"\n[{timestamp}] {error_msg}\n")
+    except Exception as e:
+        print(f"Не удалось сохранить лог: {e}")
 
 
 sys.excepthook = exception_hook

@@ -6,6 +6,7 @@
 import hashlib
 import os
 import json
+import base64
 
 from PyQt5.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QFormLayout,
@@ -15,6 +16,24 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 
 from database.db_manager import DatabaseManager
+
+# Импортируем cryptography для шифрования
+try:
+    from cryptography.fernet import Fernet
+    HAS_CRYPTOGRAPHY = True
+except ImportError:
+    HAS_CRYPTOGRAPHY = False
+    print("Предупреждение: cryptography не установлен. Пароли будут сохраняться в открытом виде.")
+    print("Установите: pip install cryptography")
+
+# Импортируем bcrypt для хеширования паролей
+try:
+    import bcrypt
+    HAS_BCRYPT = True
+except ImportError:
+    HAS_BCRYPT = False
+    print("Предупреждение: bcrypt не установлен. Используется SHA-256 (менее безопасно).")
+    print("Установите: pip install bcrypt")
 
 
 class LoginDialog(QDialog):
@@ -27,8 +46,77 @@ class LoginDialog(QDialog):
         # Используем абсолютный путь в директории приложения
         app_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
         self.remember_file = os.path.join(app_dir, 'remember.json')
+        self.key_file = os.path.join(app_dir, 'remember.key')
         self.init_ui()
         self.load_remembered_credentials()
+
+    def _get_encryption_key(self):
+        """Получить или создать ключ шифрования."""
+        if not HAS_CRYPTOGRAPHY:
+            return None
+        
+        try:
+            # Пробуем прочитать существующий ключ
+            if os.path.exists(self.key_file):
+                with open(self.key_file, 'rb') as f:
+                    return f.read()
+            else:
+                # Создаём новый ключ
+                key = Fernet.generate_key()
+                with open(self.key_file, 'wb') as f:
+                    f.write(key)
+                # Устанавливаем права доступа только для чтения владельцу
+                try:
+                    os.chmod(self.key_file, 0o600)
+                except:
+                    pass
+                return key
+        except Exception as e:
+            print(f"Ошибка работы с ключом шифрования: {e}")
+            return None
+
+    def _encrypt_password(self, password):
+        """Зашифровать пароль."""
+        key = self._get_encryption_key()
+        if not key:
+            return password  # Без шифрования возвращаем как есть
+        
+        fernet = Fernet(key)
+        encrypted = fernet.encrypt(password.encode())
+        return base64.urlsafe_b64encode(encrypted).decode()
+
+    def _decrypt_password(self, encrypted_password):
+        """Расшифровать пароль."""
+        key = self._get_encryption_key()
+        if not key:
+            return encrypted_password  # Без шифрования возвращаем как есть
+        
+        try:
+            fernet = Fernet(key)
+            encrypted_bytes = base64.urlsafe_b64decode(encrypted_password.encode())
+            return fernet.decrypt(encrypted_bytes).decode()
+        except Exception as e:
+            print(f"Ошибка расшифровки пароля: {e}")
+            return None
+
+    def _hash_password(self, password):
+        """Хешировать пароль с использованием bcrypt или SHA-256."""
+        if HAS_BCRYPT:
+            # bcrypt автоматически генерирует соль
+            return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+        else:
+            # Fallback на SHA-256 (менее безопасно)
+            return hashlib.sha256(password.encode()).hexdigest()
+
+    def _check_password(self, password, stored_hash):
+        """Проверить пароль против хеша."""
+        if HAS_BCRYPT:
+            # bcrypt.checkpw ожидает bytes
+            return bcrypt.checkpw(password.encode('utf-8'), stored_hash.encode('utf-8'))
+        else:
+            # SHA-256 сравнение
+            password_hash = hashlib.sha256(password.encode()).hexdigest()
+            return password_hash == stored_hash
 
     def init_ui(self):
         """Инициализация интерфейса."""
@@ -119,35 +207,39 @@ class LoginDialog(QDialog):
             return
 
         try:
-            password_hash = hashlib.sha256(password.encode()).hexdigest()
-
+            # Сначала получаем хеш из БД
             row = self.db.execute_query(
                 """SELECT id_user, username, password_hash, role, employee_id
-                   FROM users WHERE username = %s AND password_hash = %s""",
-                (username, password_hash),
+                   FROM users WHERE username = %s""",
+                (username,),
                 fetchone=True
             )
 
             if row:
-                user_id, db_username, stored_password, role, employee_id = row
-                self.current_user = {
-                    'id_user': user_id,
-                    'username': db_username,
-                    'role': role,
-                    'employee_id': employee_id
-                }
+                user_id, db_username, stored_password_hash, role, employee_id = row
+                
+                # Проверяем пароль с использованием bcrypt или SHA-256
+                if self._check_password(password, stored_password_hash):
+                    self.current_user = {
+                        'id_user': user_id,
+                        'username': db_username,
+                        'role': role,
+                        'employee_id': employee_id
+                    }
 
-                # Сохраняем или очищаем учётные данные
-                try:
-                    if self.remember_checkbox.isChecked():
-                        self.save_credentials(username, password)
-                    else:
-                        self.clear_credentials()
-                except Exception as e:
-                    # Не блокируем вход из-за ошибок сохранения
-                    print(f"Ошибка при сохранении/очистке: {e}")
+                    # Сохраняем или очищаем учётные данные
+                    try:
+                        if self.remember_checkbox.isChecked():
+                            self.save_credentials(username, password)
+                        else:
+                            self.clear_credentials()
+                    except Exception as e:
+                        # Не блокируем вход из-за ошибок сохранения
+                        print(f"Ошибка при сохранении/очистке: {e}")
 
-                self.accept()
+                    self.accept()
+                else:
+                    QMessageBox.critical(self, 'Ошибка', 'Неверный логин или пароль')
             else:
                 QMessageBox.critical(self, 'Ошибка', 'Неверный логин или пароль')
 
@@ -167,13 +259,30 @@ class LoginDialog(QDialog):
             self.password_edit.setEchoMode(QLineEdit.EchoMode.Password)
 
     def load_remembered_credentials(self):
-        """Загрузить сохранённые учётные данные."""
+        """Загрузить сохранённые учётные данные (с расшифровкой пароля)."""
         try:
             if os.path.exists(self.remember_file):
                 with open(self.remember_file, 'r', encoding='utf-8') as f:
                     credentials = json.load(f)
-                self.login_edit.setText(credentials.get('username', ''))
-                self.password_edit.setText(credentials.get('password', ''))
+                
+                username = credentials.get('username', '')
+                encrypted_password = credentials.get('password', '')
+                is_encrypted = credentials.get('encrypted', False)
+                
+                # Расшифровываем пароль если он зашифрован
+                if is_encrypted and HAS_CRYPTOGRAPHY:
+                    password = self._decrypt_password(encrypted_password)
+                    if password is None:
+                        # Ошибка расшифровки - очищаем данные
+                        print("Не удалось расшифровать пароль. Файл будет удалён.")
+                        self.clear_credentials()
+                        return
+                else:
+                    # Старый формат (не зашифрован) или нет cryptography
+                    password = encrypted_password
+                
+                self.login_edit.setText(username)
+                self.password_edit.setText(password)
                 self.remember_checkbox.setChecked(True)
         except (json.JSONDecodeError, KeyError, IOError, OSError) as e:
             # Если файл повреждён или недоступен - просто игнорируем
@@ -183,11 +292,15 @@ class LoginDialog(QDialog):
             print(f"Ошибка при загрузке сохранённых данных: {e}")
 
     def save_credentials(self, username, password):
-        """Сохранить учётные данные."""
+        """Сохранить учётные данные (пароль шифруется)."""
         try:
+            # Шифруем пароль
+            encrypted_password = self._encrypt_password(password)
+            
             credentials = {
                 'username': username,
-                'password': password
+                'password': encrypted_password,
+                'encrypted': HAS_CRYPTOGRAPHY  # Флаг что пароль зашифрован
             }
             with open(self.remember_file, 'w', encoding='utf-8') as f:
                 json.dump(credentials, f, ensure_ascii=False, indent=2)
