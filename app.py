@@ -363,7 +363,7 @@ class TimeTableApp:
         return f"{self.current_year}-{self.current_month:02d}"
     
     def load_day_data(self):
-        """Загрузка данных дней для текущего месяца (с автозаполнением для новых месяцев)"""
+        """Загрузка данных дней для текущего месяца (с автозаполнением для новых/пустых месяцев)"""
         self.day_data = {}
         self.days_in_month = calendar.monthrange(self.current_year, self.current_month)[1]
         month_key = self.get_month_key()
@@ -372,22 +372,23 @@ class TimeTableApp:
         try:
             employees = self.data_manager.load_employees()
             for emp_idx, employee in enumerate(employees):
-                has_data = False
+                day_string = ''
+                has_real_data = False
                 
                 # Ищем данные в словаре месяцев или в старом формате day_data
                 if 'months' in employee and month_key in employee['months']:
                     day_string = employee['months'][month_key].get('day_data', '')
-                    if day_string:
-                        has_data = True
                 elif 'day_data' in employee and employee['day_data'] and emp_idx < len(self.current_employees):
                     # Для совместимости с старым форматом
                     day_string = employee['day_data']
-                    if day_string:
-                        has_data = True
-                else:
-                    day_string = ''
                 
-                if has_data and day_string:
+                # Проверяем, есть ли реальные данные (не только пробелы и пайпы)
+                if day_string:
+                    # Удаляем пробелы и пайпы, смотрим что осталось
+                    cleaned = day_string.replace(' ', '').replace('|', '')
+                    has_real_data = len(cleaned) > 0
+                
+                if has_real_data and day_string:
                     # Используем существующие данные
                     weeks = day_string.split('|')
                     day_counter = 0
@@ -399,7 +400,7 @@ class TimeTableApp:
                                 if code in self.DAY_TYPES:
                                     self.day_data[key] = code
                 else:
-                    # Автозаполнение для новых месяцев: рабочие (Р) и выходные (В) дни
+                    # Автозаполнение для новых/пустых месяцев: рабочие (Р) и выходные (В) дни
                     for day in range(1, self.days_in_month + 1):
                         date_obj = datetime(self.current_year, self.current_month, day)
                         weekday = date_obj.weekday()  # 0=пн, 6=вс
