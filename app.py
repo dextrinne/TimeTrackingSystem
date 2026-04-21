@@ -26,10 +26,11 @@ class TimeTableApp:
         'В': ('Выходной', '#87CEEB', 'В'),
         'О': ('Отпуск', '#FFD700', 'О'),
         'Б': ('Больничный', '#FFB6C1', 'Б'),
-        'П': ('Прочее', '#DDA0DD', 'П'),
+        'П': ('Прочее (редко)', '#DDA0DD', 'П'),
     }
     
-    DAY_TYPE_ORDER = [' ', 'Р', 'В', 'О', 'Б', 'П']
+    # Порядок при левом клике (без редкого "Прочее")
+    DAY_TYPE_ORDER = [' ', 'Р', 'В', 'О', 'Б']
     
     def __init__(self, root):
         self.root = root
@@ -102,6 +103,11 @@ class TimeTableApp:
         self.employees_frame = ttk.Frame(self.notebook)
         self.notebook.add(self.employees_frame, text="👥 Сотрудники")
         self.setup_employees_tab()
+        
+        # Вкладка Архив табелей
+        self.archive_frame = ttk.Frame(self.notebook)
+        self.notebook.add(self.archive_frame, text="📦 Архив")
+        self.setup_archive_tab()
         
         # Привязка клавиш
         self.root.bind("<Control-z>", lambda e: self.on_undo())
@@ -357,36 +363,57 @@ class TimeTableApp:
         return f"{self.current_year}-{self.current_month:02d}"
     
     def load_day_data(self):
-        """Загрузка данных дней для текущего месяца"""
+        """Загрузка данных дней для текущего месяца (с автозаполнением для новых месяцев)"""
         self.day_data = {}
+        self.days_in_month = calendar.monthrange(self.current_year, self.current_month)[1]
         month_key = self.get_month_key()
         
         # Загрузить из сохраненных данных
         try:
             employees = self.data_manager.load_employees()
             for emp_idx, employee in enumerate(employees):
+                has_data = False
+                
                 # Ищем данные в словаре месяцев или в старом формате day_data
                 if 'months' in employee and month_key in employee['months']:
                     day_string = employee['months'][month_key].get('day_data', '')
+                    if day_string:
+                        has_data = True
                 elif 'day_data' in employee and employee['day_data'] and emp_idx < len(self.current_employees):
                     # Для совместимости с старым форматом
                     day_string = employee['day_data']
+                    if day_string:
+                        has_data = True
                 else:
-                    continue
+                    day_string = ''
                 
-                if not day_string:
-                    continue
-                    
-                weeks = day_string.split('|')
-                day_counter = 0
-                for week in weeks:
-                    for code in week:
-                        day_counter += 1
-                        if day_counter <= self.days_in_month:
-                            key = (emp_idx, day_counter)
-                            if code in self.DAY_TYPES:
-                                self.day_data[key] = code
-        except:
+                if has_data and day_string:
+                    # Используем существующие данные
+                    weeks = day_string.split('|')
+                    day_counter = 0
+                    for week in weeks:
+                        for code in week:
+                            day_counter += 1
+                            if day_counter <= self.days_in_month:
+                                key = (emp_idx, day_counter)
+                                if code in self.DAY_TYPES:
+                                    self.day_data[key] = code
+                else:
+                    # Автозаполнение для новых месяцев: рабочие (Р) и выходные (В) дни
+                    for day in range(1, self.days_in_month + 1):
+                        date_obj = datetime(self.current_year, self.current_month, day)
+                        weekday = date_obj.weekday()  # 0=пн, 6=вс
+                        
+                        # Суббота (5) и воскресенье (6) - выходные
+                        if weekday >= 5:
+                            day_code = 'В'
+                        else:
+                            day_code = 'Р'
+                        
+                        key = (emp_idx, day)
+                        self.day_data[key] = day_code
+        except Exception as e:
+            print(f"Ошибка при загрузке дней: {e}")
             pass
     
     def save_day_data(self):
@@ -453,13 +480,17 @@ class TimeTableApp:
         self.current_employees = employees
     
     def refresh_employees_tree(self):
-        """Обновление таблицы сотрудников"""
+        """Обновление таблицы сотрудников (отсортированной по фамилиям)"""
         # Очистить старые строки
         for item in self.employees_tree.get_children():
             self.employees_tree.delete(item)
         
+        # Сортировка сотрудников по фамилии (первое слово ФИО)
+        sorted_employees = sorted(self.current_employees, 
+                                 key=lambda e: e.get('name', '').split()[0] if e.get('name', '') else '')
+        
         # Добавить новые строки
-        for emp in self.current_employees:
+        for emp in sorted_employees:
             values = (
                 emp.get('name', ''),
                 emp.get('position', ''),
@@ -633,21 +664,21 @@ class TimeTableApp:
                 month_name = months_list[self.current_month - 1]
                 
                 # Находим доступный шаблон
-                template_candidates = [
-                    'табель-январь2026.xls',
-                    'табель-сентябрь2025.xls',
-                    'табель-ноябрь2025.xls'
-                ]
-                
-                template_path = None
-                for candidate in template_candidates:
-                    if os.path.exists(candidate):
-                        template_path = candidate
-                        break
+                template_path = self._find_template()
                 
                 if not template_path:
-                    messagebox.showerror("Ошибка", "Не найден шаблон табеля (.xls файл)")
-                    return
+                    # Предложить выбрать шаблон вручную
+                    template_path = filedialog.askopenfilename(
+                        title="Выберите файл шаблона табеля (.xls)",
+                        filetypes=[("Excel files", "*.xls"), ("All files", "*.*")]
+                    )
+                    
+                    if not template_path:
+                        messagebox.showerror("Ошибка", 
+                            "Не найден шаблон табеля.\n\n"
+                            "Поместите файл табеля (например, табель-январь2026.xls) в директорию:\n"
+                            f"{os.getcwd()}")
+                        return
                 
                 self.exporter.export_to_excel(
                     self.current_employees,
@@ -659,6 +690,33 @@ class TimeTableApp:
                 messagebox.showinfo("Успешно", f"Файл сохранен: {file_path}")
             except Exception as e:
                 messagebox.showerror("Ошибка", f"Ошибка при экспорте: {str(e)}")
+    
+    def _find_template(self):
+        """Найти шаблон табеля в текущей директории"""
+        # Сначала ищем нужный месяц
+        months_list = ['январь', 'февраль', 'март', 'апрель', 'май', 'июнь',
+                       'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь']
+        month_name = months_list[self.current_month - 1]
+        
+        # Попытка найти по месяцу и году
+        template_candidates = [
+            f'табель-{month_name}{self.current_year}.xls',
+            f'табель-{month_name}.xls',
+            'табель-январь2026.xls',
+            'табель-сентябрь2025.xls',
+            'табель-ноябрь2025.xls'
+        ]
+        
+        for candidate in template_candidates:
+            if os.path.exists(candidate):
+                return candidate
+        
+        # Если ничего не найдено, ищем любой .xls файл
+        for file in os.listdir('.'):
+            if file.endswith('.xls') and 'табель' in file.lower():
+                return file
+        
+        return None
     
     def push_undo_snapshot(self):
         """Сохранить текущее состояние в стек отмены"""
@@ -708,6 +766,167 @@ class TimeTableApp:
         
         self.save_day_data()
         self.root.destroy()
+    
+    def setup_archive_tab(self):
+        """Настройка вкладки архива табелей"""
+        # Верхняя панель с кнопками
+        button_frame = ttk.Frame(self.archive_frame)
+        button_frame.pack(side=tk.TOP, fill=tk.X, padx=10, pady=10)
+        
+        ttk.Button(button_frame, text="💾 Сохранить текущий табель", command=self.save_current_to_archive).pack(side=tk.LEFT, padx=5)
+        ttk.Button(button_frame, text="📂 Загрузить", command=self.load_selected_from_archive).pack(side=tk.LEFT, padx=5)
+        ttk.Button(button_frame, text="🗑️ Удалить", command=self.delete_selected_from_archive).pack(side=tk.LEFT, padx=5)
+        
+        # Таблица архивов
+        table_frame = ttk.Frame(self.archive_frame)
+        table_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+        
+        columns = ('Месяц', 'Год', 'Дата сохранения')
+        self.archive_tree = ttk.Treeview(table_frame, columns=columns, height=20, show='headings')
+        
+        # Определение колонок
+        for col in columns:
+            self.archive_tree.column(col, anchor=tk.CENTER, width=150)
+            self.archive_tree.heading(col, text=col)
+        
+        # Скролл-бары
+        vsb = ttk.Scrollbar(table_frame, orient=tk.VERTICAL, command=self.archive_tree.yview)
+        hsb = ttk.Scrollbar(table_frame, orient=tk.HORIZONTAL, command=self.archive_tree.xview)
+        self.archive_tree.configure(yscroll=vsb.set, xscroll=hsb.set)
+        
+        self.archive_tree.grid(row=0, column=0, sticky='nsew')
+        vsb.grid(row=0, column=1, sticky='ns')
+        hsb.grid(row=1, column=0, sticky='ew')
+        table_frame.grid_rowconfigure(0, weight=1)
+        table_frame.grid_columnconfigure(0, weight=1)
+        
+        # Загрузить список архивов
+        self.refresh_archive_list()
+    
+    def get_archive_dir(self):
+        """Получить путь к папке архива"""
+        archive_dir = os.path.join(os.path.dirname(__file__), 'archive')
+        if not os.path.exists(archive_dir):
+            os.makedirs(archive_dir)
+        return archive_dir
+    
+    def save_current_to_archive(self):
+        """Сохранить текущий табель в архив"""
+        try:
+            # Обновить данные перед сохранением
+            self.save_day_data()
+            
+            # Создать название файла
+            months_list = ['январь', 'февраль', 'март', 'апрель', 'май', 'июнь',
+                         'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь']
+            month_name = months_list[self.current_month - 1]
+            timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+            
+            filename = f"табель_{self.current_year}_{self.current_month:02d}_{month_name}_{timestamp}.json"
+            archive_path = os.path.join(self.get_archive_dir(), filename)
+            
+            # Сохранить данные
+            archive_data = {
+                'year': self.current_year,
+                'month': self.current_month,
+                'month_name': month_name,
+                'timestamp': timestamp,
+                'employees': self.current_employees
+            }
+            
+            with open(archive_path, 'w', encoding='utf-8') as f:
+                json.dump(archive_data, f, ensure_ascii=False, indent=2)
+            
+            messagebox.showinfo("Успешно", f"Табель сохранен в архив:\n{filename}")
+            self.refresh_archive_list()
+        except Exception as e:
+            messagebox.showerror("Ошибка", f"Ошибка при сохранении в архив: {str(e)}")
+    
+    def refresh_archive_list(self):
+        """Обновить список табелей в архиве"""
+        # Очистить старые строки
+        for item in self.archive_tree.get_children():
+            self.archive_tree.delete(item)
+        
+        try:
+            archive_dir = self.get_archive_dir()
+            files = sorted([f for f in os.listdir(archive_dir) if f.endswith('.json')], reverse=True)
+            
+            for filename in files:
+                filepath = os.path.join(archive_dir, filename)
+                try:
+                    with open(filepath, 'r', encoding='utf-8') as f:
+                        data = json.load(f)
+                        values = (
+                            data.get('month_name', ''),
+                            str(data.get('year', '')),
+                            data.get('timestamp', '')
+                        )
+                        self.archive_tree.insert('', 'end', values=values, iid=filename)
+                except:
+                    pass
+        except:
+            pass
+    
+    def load_selected_from_archive(self):
+        """Загрузить выбранный табель из архива"""
+        try:
+            selected = self.archive_tree.selection()
+            if not selected:
+                messagebox.showwarning("Предупреждение", "Выберите табель для загрузки")
+                return
+            
+            filename = selected[0]
+            filepath = os.path.join(self.get_archive_dir(), filename)
+            
+            with open(filepath, 'r', encoding='utf-8') as f:
+                archive_data = json.load(f)
+            
+            # Восстановить данные
+            self.current_year = archive_data.get('year', 2026)
+            self.current_month = archive_data.get('month', 1)
+            self.current_employees = archive_data.get('employees', [])
+            
+            # Обновить контролы
+            months_list = ['январь', 'февраль', 'март', 'апрель', 'май', 'июнь',
+                         'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь']
+            self.month_var.set(months_list[self.current_month - 1])
+            self.year_var.set(str(self.current_year))
+            
+            # Очистить undo при загрузке архива
+            self.undo_stack = []
+            
+            # Загрузить и обновить табель
+            self.load_day_data()
+            self.create_timetable()
+            self.refresh_employees_tree()
+            
+            # Сохранить
+            self.save_day_data()
+            
+            messagebox.showinfo("Успешно", f"Табель загружен из архива:\n{filename}")
+            
+            # Переключиться на вкладку табеля
+            self.notebook.select(0)
+        except Exception as e:
+            messagebox.showerror("Ошибка", f"Ошибка при загрузке архива: {str(e)}")
+    
+    def delete_selected_from_archive(self):
+        """Удалить выбранный табель из архива"""
+        try:
+            selected = self.archive_tree.selection()
+            if not selected:
+                messagebox.showwarning("Предупреждение", "Выберите табель для удаления")
+                return
+            
+            if messagebox.askyesno("Подтверждение", "Вы уверены, что хотите удалить этот табель из архива?"):
+                filename = selected[0]
+                filepath = os.path.join(self.get_archive_dir(), filename)
+                os.remove(filepath)
+                messagebox.showinfo("Успешно", "Табель удален из архива")
+                self.refresh_archive_list()
+        except Exception as e:
+            messagebox.showerror("Ошибка", f"Ошибка при удалении архива: {str(e)}")
 
 
 def main():
