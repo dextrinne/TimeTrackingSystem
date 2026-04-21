@@ -1,0 +1,222 @@
+[
+  {
+    "name": "Арсёнов Михаил Александрович",
+    "position": "инж.-иссл.",
+    "rate": 0.1,
+    "working_days": 0,
+    "weekends": 0,
+    "vacation": 0,
+    "sick_leave": 0,
+    "other": 0,
+    "day_data": ""
+  },
+  {
+    "name": "Барейко Илья Андреевич",
+    "position": "инж.-иссл.",
+    "rate": 0.5,
+    "working_days": 0,
+    "weekends": 0,
+    "vacation": 0,
+    "sick_leave": 0,
+    "other": 0,
+    "day_data": ""
+  },
+  {
+    "name": "Варелджан Михаил Владимирович",
+    "position": "м.н.с.",
+    "rate": 0.25,
+    "working_days": 0,
+    "weekends": 0,
+    "vacation": 0,
+    "sick_leave": 0,
+    "other": 0,
+    "day_data": ""
+  },
+  {
+    "name": "Глушков Евгений Викторович",
+    "position": "г.н.с.",
+    "rate": 0.5,
+    "working_days": 0,
+    "weekends": 0,
+    "vacation": 0,
+    "sick_leave": 0,
+    "other": 0,
+    "day_data": ""
+  },
+  {
+    "name": "Глушкова Наталья Вилениновна",
+    "position": "г.н.с.",
+    "rate": 0.5,
+    "working_days": 0,
+    "weekends": 0,
+    "vacation": 0,
+    "sick_leave": 0,
+    "other": 0,
+    "day_data": ""
+  },
+  {
+    "name": "Голуб Михаил Владимирович",
+    "position": "в.н.с.",
+    "rate": 0.1,
+    "working_days": 0,
+    "weekends": 0,
+    "vacation": 0,
+    "sick_leave": 0,
+    "other": 0,
+    "day_data": ""
+  },
+  {
+    "name": "Дорошенко Ольга Валерьевна",
+    "position": "н.с.",
+    "rate": 0.1,
+    "working_days": 0,
+    "weekends": 0,
+    "vacation": 0,
+    "sick_leave": 0,
+    "other": 0,
+    "day_data": ""
+  },
+  {
+    "name": "Евдокимов Александр Александрович",
+    "position": "н.с.",
+    "rate": 0.1,
+    "working_days": 0,
+    "weekends": 0,
+    "vacation": 0,
+    "sick_leave": 0,
+    "other": 0,
+    "day_data": ""
+  },
+  {
+    "name": "Ермоленко Ольга Александровна",
+    "position": "с.н.с.",
+    "rate": 0.25,
+    "working_days": 0,
+    "weekends": 0,
+    "vacation": 0,
+    "sick_leave": 0,
+    "other": 0,
+    "day_data": ""
+  },
+  {
+    "name": "Ерёмин Артём Александрович",
+    "position": "в.н.с.",
+    "rate": 0.5,
+    "working_days": 0,
+    "weekends": 0,
+    "vacation": 0,
+    "sick_leave": 0,
+    "other": 0,
+    "day_data": ""
+  },
+  {
+    "name": "Канищев Кирилл Константинович",
+    "position": "лаб.-иссл.",
+    "rate": 0.1,
+    "working_days": 0,
+    "weekends": 0,
+    "vacation": 0,
+    "sick_leave": 0,
+    "other": 0,
+    "day_data": ""
+  },
+  {
+    "name": "Киселев Олег Николаевич",
+    "position": "лаб.-иссл.",
+    "rate": 0.1,
+    "working_days": 0,
+    "weekends": 0,
+    "vacation": 0,
+    "sick_leave": 0,
+    "other": 0,
+    "day_data": ""
+  },
+  {
+    "name": "Нец Полина Алексеевна",
+    "position": "лаб.-иссл.",
+    "rate": 0.25,
+    "working_days": 0,
+    "weekends": 0,
+    "vacation": 0,
+    "sick_leave": 0,
+    "other": 0,
+    "day_data": ""
+  },
+  {
+    "name": "Полежаева Виктория Александровна",
+    "position": "лаб.-иссл.",
+    "rate": 0.1,
+    "working_days": 0,
+    "weekends": 0,
+    "vacation": 0,
+    "sick_leave": 0,
+    "other": 0,
+    "day_data": ""
+  },
+  {
+    "name": "Свитин Егор Владимирович",
+    "position": "лаб.-иссл.",
+    "rate": 0.1,
+    "working_days": 0,
+    "weekends": 0,
+    "vacation": 0,
+    "sick_leave": 0,
+    "other": 0,
+    "day_data": ""
+  },
+  {
+    "name": "Сорокодумов Алексей Евгеньевич",
+    "position": "лаб.-иссл.",
+    "rate": 0.25,
+    "working_days": 0,
+    "weekends": 0,
+    "vacation": 0,
+    "sick_leave": 0,
+    "other": 0,
+    "day_data": ""
+  },
+  {
+    "name": "Татаркин Александр Александрович",
+    "position": "м.н.с.",
+    "rate": 0.25,
+    "working_days": 0,
+    "weekends": 0,
+    "vacation": 0,
+    "sick_leave": 0,
+    "other": 0,
+    "day_data": ""
+  },
+  {
+    "name": "Фоменко Сергей Иванович",
+    "position": "с.н.с.",
+    "rate": 0.1,
+    "working_days": 0,
+    "weekends": 0,
+    "vacation": 0,
+    "sick_leave": 0,
+    "other": 0,
+    "day_data": ""
+  },
+  {
+    "name": "Халтурина Дарья Дмитриевна",
+    "position": "инж.-иссл.",
+    "rate": 0.1,
+    "working_days": 0,
+    "weekends": 0,
+    "vacation": 0,
+    "sick_leave": 0,
+    "other": 0,
+    "day_data": ""
+  },
+  {
+    "name": "Ханазарян Артур Дереникович",
+    "position": "инж.-иссл.",
+    "rate": 0.1,
+    "working_days": 0,
+    "weekends": 0,
+    "vacation": 0,
+    "sick_leave": 0,
+    "other": 0,
+    "day_data": ""
+  }
+]
