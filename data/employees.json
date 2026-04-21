@@ -1,0 +1,422 @@
+[
+  {
+    "name": "Арсёнов Михаил Александрович",
+    "position": "инж.-иссл.",
+    "rate": 0.1,
+    "working_days": 0,
+    "weekends": 0,
+    "vacation": 0,
+    "sick_leave": 0,
+    "other": 0,
+    "day_data": "",
+    "months": {
+      "2026-01": {
+        "working_days": 22,
+        "weekends": 9,
+        "vacation": 0,
+        "sick_leave": 0,
+        "other": 0,
+        "day_data": "РРВВРРР|РРВВРРР|РРВВРРР|РРВВРРР|РРВ|"
+      }
+    }
+  },
+  {
+    "name": "Барейко Илья Андреевич",
+    "position": "инж.-иссл.",
+    "rate": 0.5,
+    "working_days": 0,
+    "weekends": 0,
+    "vacation": 0,
+    "sick_leave": 0,
+    "other": 0,
+    "day_data": "",
+    "months": {
+      "2026-01": {
+        "working_days": 22,
+        "weekends": 9,
+        "vacation": 0,
+        "sick_leave": 0,
+        "other": 0,
+        "day_data": "РРВВРРР|РРВВРРР|РРВВРРР|РРВВРРР|РРВ|"
+      }
+    }
+  },
+  {
+    "name": "Варелджан Михаил Владимирович",
+    "position": "м.н.с.",
+    "rate": 0.25,
+    "working_days": 0,
+    "weekends": 0,
+    "vacation": 0,
+    "sick_leave": 0,
+    "other": 0,
+    "day_data": "",
+    "months": {
+      "2026-01": {
+        "working_days": 22,
+        "weekends": 9,
+        "vacation": 0,
+        "sick_leave": 0,
+        "other": 0,
+        "day_data": "РРВВРРР|РРВВРРР|РРВВРРР|РРВВРРР|РРВ|"
+      }
+    }
+  },
+  {
+    "name": "Глушков Евгений Викторович",
+    "position": "г.н.с.",
+    "rate": 0.5,
+    "working_days": 0,
+    "weekends": 0,
+    "vacation": 0,
+    "sick_leave": 0,
+    "other": 0,
+    "day_data": "",
+    "months": {
+      "2026-01": {
+        "working_days": 22,
+        "weekends": 9,
+        "vacation": 0,
+        "sick_leave": 0,
+        "other": 0,
+        "day_data": "РРВВРРР|РРВВРРР|РРВВРРР|РРВВРРР|РРВ|"
+      }
+    }
+  },
+  {
+    "name": "Глушкова Наталья Вилениновна",
+    "position": "г.н.с.",
+    "rate": 0.5,
+    "working_days": 0,
+    "weekends": 0,
+    "vacation": 0,
+    "sick_leave": 0,
+    "other": 0,
+    "day_data": "",
+    "months": {
+      "2026-01": {
+        "working_days": 22,
+        "weekends": 9,
+        "vacation": 0,
+        "sick_leave": 0,
+        "other": 0,
+        "day_data": "РРВВРРР|РРВВРРР|РРВВРРР|РРВВРРР|РРВ|"
+      }
+    }
+  },
+  {
+    "name": "Голуб Михаил Владимирович",
+    "position": "в.н.с.",
+    "rate": 0.1,
+    "working_days": 0,
+    "weekends": 0,
+    "vacation": 0,
+    "sick_leave": 0,
+    "other": 0,
+    "day_data": "",
+    "months": {
+      "2026-01": {
+        "working_days": 22,
+        "weekends": 9,
+        "vacation": 0,
+        "sick_leave": 0,
+        "other": 0,
+        "day_data": "РРВВРРР|РРВВРРР|РРВВРРР|РРВВРРР|РРВ|"
+      }
+    }
+  },
+  {
+    "name": "Дорошенко Ольга Валерьевна",
+    "position": "н.с.",
+    "rate": 0.1,
+    "working_days": 0,
+    "weekends": 0,
+    "vacation": 0,
+    "sick_leave": 0,
+    "other": 0,
+    "day_data": "",
+    "months": {
+      "2026-01": {
+        "working_days": 22,
+        "weekends": 9,
+        "vacation": 0,
+        "sick_leave": 0,
+        "other": 0,
+        "day_data": "РРВВРРР|РРВВРРР|РРВВРРР|РРВВРРР|РРВ|"
+      }
+    }
+  },
+  {
+    "name": "Евдокимов Александр Александрович",
+    "position": "н.с.",
+    "rate": 0.1,
+    "working_days": 0,
+    "weekends": 0,
+    "vacation": 0,
+    "sick_leave": 0,
+    "other": 0,
+    "day_data": "",
+    "months": {
+      "2026-01": {
+        "working_days": 22,
+        "weekends": 9,
+        "vacation": 0,
+        "sick_leave": 0,
+        "other": 0,
+        "day_data": "РРВВРРР|РРВВРРР|РРВВРРР|РРВВРРР|РРВ|"
+      }
+    }
+  },
+  {
+    "name": "Ермоленко Ольга Александровна",
+    "position": "с.н.с.",
+    "rate": 0.25,
+    "working_days": 0,
+    "weekends": 0,
+    "vacation": 0,
+    "sick_leave": 0,
+    "other": 0,
+    "day_data": "",
+    "months": {
+      "2026-01": {
+        "working_days": 22,
+        "weekends": 9,
+        "vacation": 0,
+        "sick_leave": 0,
+        "other": 0,
+        "day_data": "РРВВРРР|РРВВРРР|РРВВРРР|РРВВРРР|РРВ|"
+      }
+    }
+  },
+  {
+    "name": "Ерёмин Артём Александрович",
+    "position": "в.н.с.",
+    "rate": 0.5,
+    "working_days": 0,
+    "weekends": 0,
+    "vacation": 0,
+    "sick_leave": 0,
+    "other": 0,
+    "day_data": "",
+    "months": {
+      "2026-01": {
+        "working_days": 22,
+        "weekends": 9,
+        "vacation": 0,
+        "sick_leave": 0,
+        "other": 0,
+        "day_data": "РРВВРРР|РРВВРРР|РРВВРРР|РРВВРРР|РРВ|"
+      }
+    }
+  },
+  {
+    "name": "Канищев Кирилл Константинович",
+    "position": "лаб.-иссл.",
+    "rate": 0.1,
+    "working_days": 0,
+    "weekends": 0,
+    "vacation": 0,
+    "sick_leave": 0,
+    "other": 0,
+    "day_data": "",
+    "months": {
+      "2026-01": {
+        "working_days": 22,
+        "weekends": 9,
+        "vacation": 0,
+        "sick_leave": 0,
+        "other": 0,
+        "day_data": "РРВВРРР|РРВВРРР|РРВВРРР|РРВВРРР|РРВ|"
+      }
+    }
+  },
+  {
+    "name": "Киселев Олег Николаевич",
+    "position": "лаб.-иссл.",
+    "rate": 0.1,
+    "working_days": 0,
+    "weekends": 0,
+    "vacation": 0,
+    "sick_leave": 0,
+    "other": 0,
+    "day_data": "",
+    "months": {
+      "2026-01": {
+        "working_days": 22,
+        "weekends": 9,
+        "vacation": 0,
+        "sick_leave": 0,
+        "other": 0,
+        "day_data": "РРВВРРР|РРВВРРР|РРВВРРР|РРВВРРР|РРВ|"
+      }
+    }
+  },
+  {
+    "name": "Нец Полина Алексеевна",
+    "position": "лаб.-иссл.",
+    "rate": 0.25,
+    "working_days": 0,
+    "weekends": 0,
+    "vacation": 0,
+    "sick_leave": 0,
+    "other": 0,
+    "day_data": "",
+    "months": {
+      "2026-01": {
+        "working_days": 22,
+        "weekends": 9,
+        "vacation": 0,
+        "sick_leave": 0,
+        "other": 0,
+        "day_data": "РРВВРРР|РРВВРРР|РРВВРРР|РРВВРРР|РРВ|"
+      }
+    }
+  },
+  {
+    "name": "Полежаева Виктория Александровна",
+    "position": "лаб.-иссл.",
+    "rate": 0.1,
+    "working_days": 0,
+    "weekends": 0,
+    "vacation": 0,
+    "sick_leave": 0,
+    "other": 0,
+    "day_data": "",
+    "months": {
+      "2026-01": {
+        "working_days": 22,
+        "weekends": 9,
+        "vacation": 0,
+        "sick_leave": 0,
+        "other": 0,
+        "day_data": "РРВВРРР|РРВВРРР|РРВВРРР|РРВВРРР|РРВ|"
+      }
+    }
+  },
+  {
+    "name": "Свитин Егор Владимирович",
+    "position": "лаб.-иссл.",
+    "rate": 0.1,
+    "working_days": 0,
+    "weekends": 0,
+    "vacation": 0,
+    "sick_leave": 0,
+    "other": 0,
+    "day_data": "",
+    "months": {
+      "2026-01": {
+        "working_days": 22,
+        "weekends": 9,
+        "vacation": 0,
+        "sick_leave": 0,
+        "other": 0,
+        "day_data": "РРВВРРР|РРВВРРР|РРВВРРР|РРВВРРР|РРВ|"
+      }
+    }
+  },
+  {
+    "name": "Сорокодумов Алексей Евгеньевич",
+    "position": "лаб.-иссл.",
+    "rate": 0.25,
+    "working_days": 0,
+    "weekends": 0,
+    "vacation": 0,
+    "sick_leave": 0,
+    "other": 0,
+    "day_data": "",
+    "months": {
+      "2026-01": {
+        "working_days": 22,
+        "weekends": 9,
+        "vacation": 0,
+        "sick_leave": 0,
+        "other": 0,
+        "day_data": "РРВВРРР|РРВВРРР|РРВВРРР|РРВВРРР|РРВ|"
+      }
+    }
+  },
+  {
+    "name": "Татаркин Александр Александрович",
+    "position": "м.н.с.",
+    "rate": 0.25,
+    "working_days": 0,
+    "weekends": 0,
+    "vacation": 0,
+    "sick_leave": 0,
+    "other": 0,
+    "day_data": "",
+    "months": {
+      "2026-01": {
+        "working_days": 22,
+        "weekends": 9,
+        "vacation": 0,
+        "sick_leave": 0,
+        "other": 0,
+        "day_data": "РРВВРРР|РРВВРРР|РРВВРРР|РРВВРРР|РРВ|"
+      }
+    }
+  },
+  {
+    "name": "Фоменко Сергей Иванович",
+    "position": "с.н.с.",
+    "rate": 0.1,
+    "working_days": 0,
+    "weekends": 0,
+    "vacation": 0,
+    "sick_leave": 0,
+    "other": 0,
+    "day_data": "",
+    "months": {
+      "2026-01": {
+        "working_days": 22,
+        "weekends": 9,
+        "vacation": 0,
+        "sick_leave": 0,
+        "other": 0,
+        "day_data": "РРВВРРР|РРВВРРР|РРВВРРР|РРВВРРР|РРВ|"
+      }
+    }
+  },
+  {
+    "name": "Халтурина Дарья Дмитриевна",
+    "position": "инж.-иссл.",
+    "rate": 0.1,
+    "working_days": 0,
+    "weekends": 0,
+    "vacation": 0,
+    "sick_leave": 0,
+    "other": 0,
+    "day_data": "",
+    "months": {
+      "2026-01": {
+        "working_days": 22,
+        "weekends": 9,
+        "vacation": 0,
+        "sick_leave": 0,
+        "other": 0,
+        "day_data": "РРВВРРР|РРВВРРР|РРВВРРР|РРВВРРР|РРВ|"
+      }
+    }
+  },
+  {
+    "name": "Ханазарян Артур Дереникович",
+    "position": "инж.-иссл.",
+    "rate": 0.1,
+    "working_days": 0,
+    "weekends": 0,
+    "vacation": 0,
+    "sick_leave": 0,
+    "other": 0,
+    "day_data": "",
+    "months": {
+      "2026-01": {
+        "working_days": 22,
+        "weekends": 9,
+        "vacation": 0,
+        "sick_leave": 0,
+        "other": 0,
+        "day_data": "РРВВРРР|РРВВРРР|РРВВРРР|РРВВРРР|РРВ|"
+      }
+    }
+  }
+]

@@ -1,0 +1,65 @@
+[
+  {
+    "name": "Иванов Иван Иванович",
+    "position": "Директор",
+    "rate": 1.0,
+    "working_days": 20,
+    "weekends": 8,
+    "vacation": 0,
+    "sick_leave": 0,
+    "other": 0,
+    "day_data": "",
+    "months": {
+      "2026-07": {
+        "working_days": 23,
+        "weekends": 8,
+        "vacation": 0,
+        "sick_leave": 0,
+        "other": 0,
+        "day_data": "РРРВВРР|РРРВВРР|РРРВВРР|РРРВВРР|РРР|"
+      }
+    }
+  },
+  {
+    "name": "Петров Петр Петрович",
+    "position": "Менеджер",
+    "rate": 1.0,
+    "working_days": 22,
+    "weekends": 6,
+    "vacation": 0,
+    "sick_leave": 0,
+    "other": 0,
+    "day_data": "",
+    "months": {
+      "2026-07": {
+        "working_days": 23,
+        "weekends": 8,
+        "vacation": 0,
+        "sick_leave": 0,
+        "other": 0,
+        "day_data": "РРРВВРР|РРРВВРР|РРРВВРР|РРРВВРР|РРР|"
+      }
+    }
+  },
+  {
+    "name": "Сидоров Сидор Сидорович",
+    "position": "Специалист",
+    "rate": 0.5,
+    "working_days": 20,
+    "weekends": 8,
+    "vacation": 0,
+    "sick_leave": 1,
+    "other": 0,
+    "day_data": "",
+    "months": {
+      "2026-07": {
+        "working_days": 23,
+        "weekends": 8,
+        "vacation": 0,
+        "sick_leave": 0,
+        "other": 0,
+        "day_data": "РРРВВРР|РРРВВРР|РРРВВРР|РРРВВРР|РРР|"
+      }
+    }
+  }
+]
