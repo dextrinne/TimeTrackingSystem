@@ -56,7 +56,7 @@ class AppConfig:
 
 class UIConfig:
     # Размеры ячеек календаря
-    CELL_WIDTH = 70
+    CELL_WIDTH = 45
     CELL_HEIGHT = 45
     EMPLOYEE_COLUMN_WIDTH = 230
     
