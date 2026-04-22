@@ -187,6 +187,7 @@ class CalendarTableWidget(QTableWidget):
         # Настройка заголовков
         self.horizontalHeader().setDefaultAlignment(Qt.AlignmentFlag.AlignCenter)
         self.verticalHeader().setVisible(False)
+        self.horizontalHeader().setVisible(False)
         self.setSelectionMode(QTableWidget.SelectionMode.NoSelection)
         
         # Стиль
